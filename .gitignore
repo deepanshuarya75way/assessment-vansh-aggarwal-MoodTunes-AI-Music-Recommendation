@@ -1,0 +1,30 @@
+# Environment variables
+.env
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Virtual environments
+venv/
+venv311/
+.venv/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# ML / temporary files
+*.h5
+*.keras
+*.pth
+*.pt
+*.ckpt
+
+# Streamlit
+.streamlit/secrets.toml
