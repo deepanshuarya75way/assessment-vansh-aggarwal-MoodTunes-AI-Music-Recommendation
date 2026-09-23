@@ -90,19 +90,62 @@ def save_session(user_id, input_mode, emotion, confidence, tracks):
 
 def render_track_card(track: dict, idx: int):
     """Render a single track as a styled card."""
+
     with st.container():
         cols = st.columns([1, 6, 2])
+
         with cols[0]:
             st.markdown(f"**#{idx}**")
+
         with cols[1]:
             name = track.get("name", "Unknown")
             artist = track.get("artist", "Unknown")
             url = track.get("url", "#")
-            st.markdown(f"**[{name}]({url})**  \n*{artist}*")
+
+            st.markdown(
+                f"**[{name}]({url})**  \n*{artist}*"
+            )
+
         with cols[2]:
             listeners = track.get("listeners", 0)
+
             if listeners:
                 st.caption(f"👥 {listeners:,}")
+
+        # Feedback buttons
+        fb_cols = st.columns([1, 1, 6])
+
+        with fb_cols[0]:
+            if st.button(
+                "👍",
+                key=f"like_{idx}_{name}",
+            ):
+                send_feedback(track, "positive")
+
+        with fb_cols[1]:
+            if st.button(
+                "👎",
+                key=f"dislike_{idx}_{name}",
+            ):
+                send_feedback(track, "negative")
+
+
+def send_feedback(track : dict, feedback : str):
+    mood = st.session_state.get("current_mood", "neutral")
+    payload = {
+        "user_id" : st.session_state.get("user_id", "guest"),
+        "mood": mood,
+        "track_id" : track.get("track_id") or f"{track.get('name')}::{track.get('artist')}",
+        "track_name" : track.get("name", "unknown"),
+        "artist" : track.get("artist", "unknown"),
+        "feedback" : feedback,  
+    }
+    try :
+        resp = requests.post(f"{API_BASE}/api/music/feedback", json = payload, timeout=10)
+        resp.raise_for_status()
+        st.success("feedback saved")
+    except Exception as e:
+        st.error(f"Feedback failed : {e}")
 
 
 # ─────────────────────────── PAGES ────────────────────────────

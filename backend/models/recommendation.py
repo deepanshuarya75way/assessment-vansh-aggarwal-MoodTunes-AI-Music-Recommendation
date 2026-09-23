@@ -6,6 +6,18 @@ from enum import Enum
 
 ##3class InputMode(str, Enum):
 ##   text = "text"  image = "image" 
+
+class FeedbackRequest(BaseModel) :
+    user_id : str
+    mood : str
+    track_id : str
+    track_name : str
+    artist : str
+    feedback : str
+
+class FeedbackRecord(FeedbackRequest) :
+    timestamp: datetime = datetime.utcnow()
+    
 class InputMode(str, Enum):
     text = "text"
     image = "image"
@@ -56,7 +68,7 @@ class MusicRecommendRequest(BaseModel):
 class MusicRecommendResponse(BaseModel):
     emotion: str
     mood_tag: str
-    tracks: List[Track]
+    tracks: list
     playlist_label: str
 
 

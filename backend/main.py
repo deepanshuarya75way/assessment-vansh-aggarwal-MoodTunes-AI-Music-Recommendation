@@ -8,8 +8,9 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 
-from backend.config import connect_db, close_db
+from backend.config import connect_db, close_db, get_db
 from backend.routers import emotion, music, history
+from backend.services.music_engine import create_indexes
 
 
 @asynccontextmanager
@@ -63,3 +64,8 @@ async def root():
         "docs": "/docs",
         "health": "/api/health",
     }
+
+@app.on_event("startup")
+async def startup_event() :
+    db = get_db()
+    await create_indexes(db)

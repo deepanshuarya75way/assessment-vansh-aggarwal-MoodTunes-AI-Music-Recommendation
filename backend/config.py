@@ -3,6 +3,7 @@ import os
 
 from motor.motor_asyncio import AsyncIOMotorClient
 from dotenv import load_dotenv
+#from backend.services import music_engine, create_indexes
 
 
 # moodtunes/
@@ -35,6 +36,11 @@ async def connect_db():
     db_instance.client = AsyncIOMotorClient(MONGODB_URL)
     db_instance.db = db_instance.client[DB_NAME]
     print(f"✅ Connected to MongoDB: {DB_NAME}")
+
+
+async def create_indexes(db) :
+    await db.feedback.create_index("mood")
+    await db.feedback.create_index([("mood", 1), ("track_id", 1)])
 
 
 async def close_db():
